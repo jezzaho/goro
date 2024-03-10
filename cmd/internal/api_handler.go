@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 	"net/url"
 	"strings"
 )
@@ -14,24 +15,50 @@ type Auth struct {
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int32  `json:"expires_in"`
 }
-
-func GetApiData() string {
-	return getApiResponse(postForAuth())
+type ApiQuery struct {
+	Airline string
+	StartDate string
+	EndDate string
+	DaysOfOperation string
+	TimeMode string
+	Origin string
+	Destination string
+}
+func (a *ApiQuery) Swap() {
+	a.Origin, a.Destination = a.Destination, a.Origin
 }
 
-func getApiResponse(auth Auth) string {
+func GetApiData(queryList []ApiQuery) string {
+	queryResult := ""
+	apiAuth := postForAuth()
+	for _, query := range queryList {
+		queryResult += getApiResponse(apiAuth, query)
+		// Swap query fields Origin and Destination for full result
+		query.Swap()
+		// Has to sleep - otherwise QPS is exceeded for Api Call
+		time.Sleep(500 * time.Millisecond)
+		queryResult += getApiResponse(apiAuth, query)
+	}
+
+	return queryResult;
+	
+
+}
+
+func getApiResponse(auth Auth, query ApiQuery) string {
 
 	client := http.Client{}
 	getUrl := "https://api.lufthansa.com/v1/flight-schedules/flightschedules/passenger"
-
+	
+	
 	queryParams := url.Values{}
-	queryParams.Add("airlines", "LH")
-	queryParams.Add("startDate", "19JUL24")
-	queryParams.Add("endDate", "25JUL24")
-	queryParams.Add("daysOfOperation", "1234567")
-	queryParams.Add("timeMode", "LT")
-	queryParams.Add("origin", "KRK")
-	queryParams.Add("destination", "FRA")
+	queryParams.Add("airlines", query.Airline)
+	queryParams.Add("startDate", query.StartDate)
+	queryParams.Add("endDate", query.EndDate)
+	queryParams.Add("daysOfOperation", query.DaysOfOperation)
+	queryParams.Add("timeMode", query.TimeMode)
+	queryParams.Add("origin", query.Origin)
+	queryParams.Add("destination", query.Destination)
 
 	fullURL := fmt.Sprintf("%s?%s", getUrl, queryParams.Encode())
 
@@ -56,6 +83,7 @@ func getApiResponse(auth Auth) string {
 	}
 
 	// Print the response body
+	
 	return string(body)
 }
 
