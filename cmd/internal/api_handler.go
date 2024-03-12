@@ -1,13 +1,14 @@
 package internal
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type Auth struct {
@@ -16,32 +17,34 @@ type Auth struct {
 	ExpiresIn   int32  `json:"expires_in"`
 }
 type ApiQuery struct {
-	Airline string
-	StartDate string
-	EndDate string
+	Airline         string
+	StartDate       string
+	EndDate         string
 	DaysOfOperation string
-	TimeMode string
-	Origin string
-	Destination string
+	TimeMode        string
+	Origin          string
+	Destination     string
 }
+
 func (a *ApiQuery) Swap() {
 	a.Origin, a.Destination = a.Destination, a.Origin
 }
 
-func GetApiData(queryList []ApiQuery) string {
+func GetApiData(queryList []ApiQuery) []byte {
 	queryResult := ""
 	apiAuth := postForAuth()
+	time.Sleep(1000 * time.Millisecond)
 	for _, query := range queryList {
+		time.Sleep(1000 * time.Millisecond)
 		queryResult += getApiResponse(apiAuth, query)
 		// Swap query fields Origin and Destination for full result
 		query.Swap()
 		// Has to sleep - otherwise QPS is exceeded for Api Call
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(1000 * time.Millisecond)
 		queryResult += getApiResponse(apiAuth, query)
 	}
 
-	return queryResult;
-	
+	return []byte(queryResult)
 
 }
 
@@ -49,8 +52,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 
 	client := http.Client{}
 	getUrl := "https://api.lufthansa.com/v1/flight-schedules/flightschedules/passenger"
-	
-	
+
 	queryParams := url.Values{}
 	queryParams.Add("airlines", query.Airline)
 	queryParams.Add("startDate", query.StartDate)
@@ -83,7 +85,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 	}
 
 	// Print the response body
-	
+	body = bytes.Replace(body, []byte("]["), []byte(","), -1)
 	return string(body)
 }
 
