@@ -1,107 +1,79 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
-type model struct {
-	choices  []string         // items on the to-do list
-	cursor   int              // which to-do list item our cursor is pointing at
-	selected map[int]struct{} // which to-do items are selected
+type CliInput struct {
+	Line      string
+	Beggining string
+	Ending    string
 }
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
+func RenderMainScreen() CliInput {
+	cliInput := CliInput{}
+	pterm.DefaultCenter.Println("Program 'ROZKŁADACZ' służy do sprawdzania rozkładów linii lotniczych. \n Eryk Kiper 2024")
+	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
+	pterm.DefaultCenter.Println(s)
 
-	// Is it a key press?
-	case tea.KeyMsg:
+	pterm.DefaultCenter.Println("Wybierz linię lotniczą dla której chcesz sprawdzić rozkład...")
 
-		// Cool, what was the actual key pressed?
-		switch msg.String() {
+	var optionsAirlines []string
+	optionsAirlines = append(optionsAirlines, "LH - Lufthansa")
+	optionsAirlines = append(optionsAirlines, "OS - Austrian Airlines")
+	optionsAirlines = append(optionsAirlines, "LX - Swiss Airlines")
+	optionsAirlines = append(optionsAirlines, "SN - Brussels Airways")
 
-		// These keys should exit the program.
-		case "ctrl+c", "q":
-			return m, tea.Quit
-
-		// The "up" and "k" keys move the cursor up
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		// The "down" and "j" keys move the cursor down
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		// The "enter" key and the spacebar (a literal space) toggle
-		// the selected state for the item that the cursor is pointing at.
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
-		}
+	// Use PTerm's interactive select feature to present the options to the user and capture their selection
+	// The Show() method displays the options and waits for the user's input
+	// LINIA LOTNICZA
+	selectedAirline, _ := pterm.DefaultInteractiveSelect.WithOptions(optionsAirlines).Show()
+	cliInput.Line = selectedAirline
+	pterm.DefaultArea.Clear()
+	// Display the selected option to the user with a green color for emphasis
+	pterm.Info.Printfln("Wybrano: %s", pterm.Green(selectedAirline))
+	pterm.DefaultCenter.Println("Wybierz przedział rozkładu...")
+	var optionsTime []string
+	optionsTime = append(optionsTime, "W23")
+	optionsTime = append(optionsTime, "S24")
+	optionsTime = append(optionsTime, "Własny")
+	selectedTime, _ := pterm.DefaultInteractiveSelect.WithOptions(optionsTime).Show()
+	if selectedTime == "W23" {
+		cliInput.Beggining = "29NOV23"
+		cliInput.Ending = "31MAR24"
+	} else {
+		cliInput.Beggining = "01APR24"
+		cliInput.Ending = "27NOV24"
 	}
+	pterm.DefaultArea.Clear()
+	// Display the selected option to the user with a green color for emphasis
+	pterm.Info.Printfln("Wybrano: %s", pterm.Green(selectedTime))
+	if selectedTime == "Własny" {
+		// Poczatek rozkladu
+		// Create an interactive text input with single line input mode and show it
+		beginning, _ := pterm.DefaultInteractiveTextInput.Show("Wpisz początek przedziału w formacie DDMMMYY (np. 19JUL24)")
 
-	// Return the updated model to the Bubble Tea runtime for processing.
-	// Note that we're not returning a command.
-	return m, nil
-}
-func (m model) View() string {
-	// The header
-	s := "Jakiej linii rozklad chcesz sprawdzic?\n\n"
+		// Print a blank line for better readability
+		pterm.Println()
 
-	// Iterate over our choices
-	for i, choice := range m.choices {
+		// Print the user's answer with an info prefix
+		pterm.Info.Printfln("Wybrano: %s", beginning)
+		end, _ := pterm.DefaultInteractiveTextInput.Show("Wpisz koniec przedziału w formacie DDMMMYY (np. 19JUL24)")
 
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
+		// Print a blank line for better readability
+		pterm.Println()
 
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
+		// Print the user's answer with an info prefix
+		pterm.Info.Printfln("Wybrano: %s", end)
 	}
-
-	// The footer
-	s += "\nPress q to quit.\n"
-
-	// Send the UI for rendering
-	return s
+	return cliInput
 }
 
-func initialModel() model {
-	return model{
-		// Our to-do list is a grocery list
-		choices: []string{"Rozklad LH", "Rozklad OS", "Rozklad LX", "Rozklad EW"},
+func RenderFinal() {
+	pterm.DefaultCenter.Println("Program 'ROZKŁADACZ' służy do sprawdzania rozkładów linii lotniczych. \n Eryk Kiper 2024")
+	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
+	pterm.DefaultCenter.Println(s)
+	pterm.DefaultCenter.Println("Program zapisał plik csv jako \"output.csv\" w folderu bieżącym.")
 
-		// A map which indicates which choices are selected. We're using
-		// the  map like a mathematical set. The keys refer to the indexes
-		// of the `choices` slice, above.
-		selected: make(map[int]struct{}),
-	}
-}
-func InitalizeApp() {
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
-	}
 }

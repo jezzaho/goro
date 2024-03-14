@@ -130,5 +130,4 @@ func CreateCSVFromResponse(jsonData []byte) {
 		}
 	}
 
-	fmt.Println("CSV file created successfully.")
 }
