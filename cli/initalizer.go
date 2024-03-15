@@ -57,14 +57,14 @@ func RenderMainScreen() CliInput {
 		// Poczatek rozkladu
 		// Create an interactive text input with single line input mode and show it
 		beginning, _ := pterm.DefaultInteractiveTextInput.Show("Wpisz początek przedziału w formacie DDMMMYY (np. 19JUL24)")
-
 		// Print a blank line for better readability
 		pterm.Println()
-
 		// Print the user's answer with an info prefix
 		pterm.Info.Printfln("Wybrano: %s", beginning)
 		end, _ := pterm.DefaultInteractiveTextInput.Show("Wpisz koniec przedziału w formacie DDMMMYY (np. 19JUL24)")
-
+		pterm.Info.Printfln("Wybrano: %s", end)
+		cliInput.Beggining = beginning
+		cliInput.Ending = end
 		// Print a blank line for better readability
 		pterm.Println()
 

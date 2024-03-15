@@ -88,7 +88,7 @@ func main() {
 	apiData := internal.GetApiData(queryList, apiAuth)
 	flattened := internal.FlattenJSON(apiData)
 	internal.CreateCSVFromResponse(flattened)
-	spinner.Success("Spinner 1 is done!")
+	spinner.Success("ROZKŁAD POBRANY!")
 	cli.RenderFinal()
 	//FRONTEND
 
