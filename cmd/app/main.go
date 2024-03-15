@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jezzaho/goro/cli"
 	"github.com/jezzaho/goro/cmd/internal"
+	"github.com/pterm/pterm"
 )
 
 // "github.com/jezzaho/goro/cmd/internal"
@@ -15,6 +16,7 @@ func main() {
 	// 	Ending:    "19JUL24",
 	// }
 	input := cli.RenderMainScreen()
+	spinner, _ := pterm.DefaultSpinner.Start("Pobieranie rozkładu.")
 	LHQuery := []internal.ApiQuery{
 		{
 			Airline:         "LH",
@@ -85,9 +87,8 @@ func main() {
 	apiAuth := internal.PostForAuth()
 	apiData := internal.GetApiData(queryList, apiAuth)
 	flattened := internal.FlattenJSON(apiData)
-	println(string(flattened))
 	internal.CreateCSVFromResponse(flattened)
-
+	spinner.Success("Spinner 1 is done!")
 	cli.RenderFinal()
 	//FRONTEND
 
