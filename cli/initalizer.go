@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"bufio"
+	"os"
+
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 )
@@ -13,6 +16,7 @@ type CliInput struct {
 
 func RenderMainScreen() CliInput {
 	cliInput := CliInput{}
+
 	pterm.DefaultCenter.Println("Program 'ROZKŁADACZ' służy do sprawdzania rozkładów linii lotniczych. \n Eryk Kiper 2024")
 	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
 	pterm.DefaultCenter.Println(s)
@@ -75,5 +79,9 @@ func RenderFinal() {
 	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
 	pterm.DefaultCenter.Println(s)
 	pterm.DefaultCenter.Println("Program zapisał plik csv jako \"output.csv\" w folderu bieżącym.")
+	pterm.DefaultCenter.Println("Zadanie zakończone. Naciśnij Enter aby wyjść.")
+
+	// Wait for user to press Enter before exiting
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
 
 }

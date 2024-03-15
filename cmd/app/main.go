@@ -9,26 +9,29 @@ import (
 // 	"github.com/jezzaho/goro/cli"
 
 func main() {
-
+	// input := cli.CliInput{
+	// 	Line:      "LH",
+	// 	Beggining: "19JUL24",
+	// 	Ending:    "19JUL24",
+	// }
 	input := cli.RenderMainScreen()
-	// input := cli.RenderMainScreen()
 	LHQuery := []internal.ApiQuery{
 		{
 			Airline:         "LH",
-			StartDate:       "19JUL24",
-			EndDate:         "19JUL24",
+			StartDate:       input.Beggining,
+			EndDate:         input.Ending,
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
-			Origin:          "KRA",
+			Origin:          "KRK",
 			Destination:     "FRA",
 		},
 		{
 			Airline:         "LH",
-			StartDate:       "18JUL24",
-			EndDate:         "18JUL24",
+			StartDate:       input.Beggining,
+			EndDate:         input.Ending,
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
-			Origin:          "KRA",
+			Origin:          "KRK",
 			Destination:     "MUC",
 		},
 	}
@@ -39,7 +42,7 @@ func main() {
 			EndDate:         input.Ending,
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
-			Origin:          "KRA",
+			Origin:          "KRK",
 			Destination:     "VIE",
 		},
 	}
@@ -50,7 +53,7 @@ func main() {
 			EndDate:         string(input.Ending),
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
-			Origin:          "KRA",
+			Origin:          "KRK",
 			Destination:     "ZRH",
 		},
 	}
@@ -61,7 +64,7 @@ func main() {
 			EndDate:         input.Ending,
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
-			Origin:          "KRA",
+			Origin:          "KRK",
 			Destination:     "BRU",
 		},
 	}
@@ -79,8 +82,8 @@ func main() {
 	default:
 		queryList = []internal.ApiQuery{}
 	}
-
-	apiData := internal.GetApiData(queryList)
+	apiAuth := internal.PostForAuth()
+	apiData := internal.GetApiData(queryList, apiAuth)
 	flattened := internal.FlattenJSON(apiData)
 	println(string(flattened))
 	internal.CreateCSVFromResponse(flattened)

@@ -30,9 +30,9 @@ func (a *ApiQuery) Swap() {
 	a.Origin, a.Destination = a.Destination, a.Origin
 }
 
-func GetApiData(queryList []ApiQuery) []byte {
+func GetApiData(queryList []ApiQuery, apiAuth Auth) []byte {
 	queryResult := ""
-	apiAuth := postForAuth()
+	
 	time.Sleep(2000 * time.Millisecond)
 	for _, query := range queryList {
 		time.Sleep(2000 * time.Millisecond)
@@ -49,7 +49,7 @@ func GetApiData(queryList []ApiQuery) []byte {
 }
 
 func getApiResponse(auth Auth, query ApiQuery) string {
-	time.Sleep(2000 * time.Millisecond)
+	
 	client := http.Client{}
 	getUrl := "https://api.lufthansa.com/v1/flight-schedules/flightschedules/passenger"
 
@@ -61,7 +61,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 	queryParams.Add("timeMode", query.TimeMode)
 	queryParams.Add("origin", query.Origin)
 	queryParams.Add("destination", query.Destination)
-	time.Sleep(2000 * time.Millisecond)
+
 	fullURL := fmt.Sprintf("%s?%s", getUrl, queryParams.Encode())
 
 	// Perform the GET request
@@ -89,7 +89,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 	return string(body)
 }
 
-func postForAuth() Auth {
+func PostForAuth() Auth {
 
 	postString := "https://api.lufthansa.com/v1/oauth/token"
 
