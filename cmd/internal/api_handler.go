@@ -32,7 +32,7 @@ func (a *ApiQuery) Swap() {
 
 func GetApiData(queryList []ApiQuery, apiAuth Auth) []byte {
 	queryResult := ""
-	
+
 	time.Sleep(2000 * time.Millisecond)
 	for _, query := range queryList {
 		time.Sleep(2000 * time.Millisecond)
@@ -49,7 +49,7 @@ func GetApiData(queryList []ApiQuery, apiAuth Auth) []byte {
 }
 
 func getApiResponse(auth Auth, query ApiQuery) string {
-	
+
 	client := http.Client{}
 	getUrl := "https://api.lufthansa.com/v1/flight-schedules/flightschedules/passenger"
 
