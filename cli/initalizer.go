@@ -47,7 +47,7 @@ func RenderMainScreen() CliInput {
 	if selectedTime == "W23" {
 		cliInput.Beggining = "29NOV23"
 		cliInput.Ending = "31MAR24"
-	} 
+	}
 	if selectedTime == "S24" {
 		cliInput.Beggining = "01APR24"
 		cliInput.Ending = "27NOV24"
@@ -55,7 +55,7 @@ func RenderMainScreen() CliInput {
 	if selectedTime == "W24" {
 		cliInput.Beggining = "28NOV24"
 		cliInput.Ending = "" // FILL DATA
-	
+	}
 	pterm.DefaultArea.Clear()
 	// Display the selected option to the user with a green color for emphasis
 	pterm.Info.Printfln("Wybrano: %s", pterm.Green(selectedTime))
