@@ -81,7 +81,7 @@ func (f FlightResponse) isApiResponse() {}
 
 // Process Response
 
-func CreateCSVFromResponse(jsonData []byte) {
+func CreateCSVFromResponse(jsonData []byte, separate bool) {
 	var errResponse ErrorResponse
 	err := json.Unmarshal(jsonData, &errResponse)
 	if err != nil {
@@ -123,11 +123,25 @@ func CreateCSVFromResponse(jsonData []byte) {
 		daysOfOperationWrite := DaysOfOperation(d.PeriodOfOperationLT.DaysOfOperation)
 		// "Z", "Do", "Linia", "Numer", "Odlot", "Przylot", "Od", "Do", "Dni", "Samolot", "Operator", "Typ"
 		row := []string{d.Legs[0].Origin, d.Legs[0].Destination, d.Airline, flightNumberWrite, startTimeWrite, endTimeWrite, startDateWrite, endDateWrite, daysOfOperationWrite, d.Legs[0].AircraftType, d.Legs[0].AircraftOwner, d.Legs[0].ServiceType}
-		err := writer.Write(row)
-		if err != nil {
-			fmt.Println("Error writing CSV row:", err)
-			return
+		var rows [][]string
+		if separate {
+			rows = SeparateDays(row)
+			for _, row := range rows {
+				err := writer.Write(row)
+				if err != nil {
+					fmt.Println("Error writing CSV row:", err)
+					return
+				}
+			}
+		} else {
+
+			err := writer.Write(row)
+			if err != nil {
+				fmt.Println("Error writing CSV row:", err)
+				return
+			}
 		}
+
 	}
 
 }

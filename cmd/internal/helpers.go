@@ -88,50 +88,47 @@ func moreThanOneNumberReg(s string) bool {
 
 }
 
-func SeparateDays(r [][]string) *os.File {
-	for _, row := range r {
-		check := row[8]
-		if moreThanOneNumberReg(check) {
-			var days []int
-			// Check if contains
-			if strings.Contains(check, "1") {
-				days = append(days, 1)
-			}
-			if strings.Contains(check, "2") {
-				days = append(days, 2)
-			}
-			if strings.Contains(check, "3") {
-				days = append(days, 3)
-			}
-			if strings.Contains(check, "4") {
-				days = append(days, 4)
-			}
-			if strings.Contains(check, "5") {
-				days = append(days, 5)
-			}
-			if strings.Contains(check, "6") {
-				days = append(days, 6)
-			}
-			if strings.Contains(check, "7") {
-				days = append(days, 7)
-			}
-			if strings.Contains(check, "1") {
-				days = append(days, 1)
-			}
-			newLines := performSeparation(row, days)
+func SeparateDays(r []string) [][]string {
+	newLines := [][]string{}
+	check := string(r[8])
+	if moreThanOneNumberReg(check) {
+		var days []int
+		// Check if contains
+		if strings.Contains(check, "1") {
+			days = append(days, 1)
 		}
-	}
+		if strings.Contains(check, "2") {
+			days = append(days, 2)
+		}
+		if strings.Contains(check, "3") {
+			days = append(days, 3)
+		}
+		if strings.Contains(check, "4") {
+			days = append(days, 4)
+		}
+		if strings.Contains(check, "5") {
+			days = append(days, 5)
+		}
+		if strings.Contains(check, "6") {
+			days = append(days, 6)
+		}
+		if strings.Contains(check, "7") {
+			days = append(days, 7)
+		}
 
+		newLines = performSeparation(r, days)
+	}
+	return newLines
 }
 
 func performSeparation(row []string, d []int) [][]string {
+	var v int
 	var newRows [][]string
-	for v := range d {
+	for _, v = range d {
 		from := row[6]
 		to := row[7]
-		cpy := row
-
-		var newRow []string
+		cpy := make([]string, len(row))
+		copy(cpy, row)
 
 		from_day, _ := time.Parse("02-01-2006", from)
 		f_day_n := int(from_day.Weekday())
@@ -139,27 +136,26 @@ func performSeparation(row []string, d []int) [][]string {
 		to_day, _ := time.Parse("02-01-2006", to)
 		t_day_n := int(to_day.Weekday())
 		var l int
-		var day int
-		// df to from, dt to to, day to v
+
+		// OD
 		if v < f_day_n {
-			day += 7
-			l = day - f_day_n
+			l = 7 - (f_day_n - v)
 		} else {
-			l = day - f_day_n
+			l = v - f_day_n
 		}
+		// DO
 		var m int
 		if v > t_day_n {
-			day -= 7
-			m = day - t_day_n
+			m = (v - t_day_n) - 7
 		} else {
-			m = day - t_day_n
+			m = t_day_n - v
 		}
 
 		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
-		cpy[6] = from_day.AddDate(0, 0, l).Format("02-01-2006")
-		cpy[7] = to_day.AddDate(0, 0, m).Format("02-01-2006")
+		cpy[6] = string(from_day.AddDate(0, 0, l).Format("02-01-2006"))
+		cpy[7] = string(to_day.AddDate(0, 0, m).Format("02-01-2006"))
 
-		newRow = append(newRow, cpy...)
+		newRows = append(newRows, cpy)
 
 		// OD -> do przodu, DO do tylu, sprawdzenie dat
 	}

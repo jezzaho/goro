@@ -9,9 +9,10 @@ import (
 )
 
 type CliInput struct {
-	Line      string
-	Beggining string
-	Ending    string
+	Line         string
+	Beggining    string
+	Ending       string
+	SeparateDays bool
 }
 
 func RenderMainScreen() CliInput {
@@ -41,8 +42,8 @@ func RenderMainScreen() CliInput {
 	var optionsTime []string
 	optionsTime = append(optionsTime, "W23")
 	optionsTime = append(optionsTime, "S24")
-	optionsTime = append(optionsTime, "Własny")
 	optionsTime = append(optionsTime, "W24")
+	optionsTime = append(optionsTime, "Własny")
 	selectedTime, _ := pterm.DefaultInteractiveSelect.WithOptions(optionsTime).Show()
 	if selectedTime == "W23" {
 		cliInput.Beggining = "29NOV23"
@@ -54,7 +55,7 @@ func RenderMainScreen() CliInput {
 	}
 	if selectedTime == "W24" {
 		cliInput.Beggining = "28NOV24"
-		cliInput.Ending = "" // FILL DATA
+		cliInput.Ending = "30MAR25"
 	}
 	pterm.DefaultArea.Clear()
 	// Display the selected option to the user with a green color for emphasis
@@ -76,6 +77,17 @@ func RenderMainScreen() CliInput {
 
 		// Print the user's answer with an info prefix
 		pterm.Info.Printfln("Wybrano: %s", end)
+	}
+	var separateDaysOpts []string
+	pterm.DefaultCenter.Println("Czy chcesz rozdzielic dni w rozkladzie?")
+	separateDaysOpts = append(separateDaysOpts, "TAK")
+	separateDaysOpts = append(separateDaysOpts, "NIE")
+	separateDaysOptsSel, _ := pterm.DefaultInteractiveSelect.WithOptions(separateDaysOpts).Show()
+	pterm.Info.Printfln("Wybrano: %s", pterm.Green(separateDaysOptsSel))
+	if separateDaysOptsSel == "TAK" {
+		cliInput.SeparateDays = true
+	} else {
+		cliInput.SeparateDays = false
 	}
 	return cliInput
 }

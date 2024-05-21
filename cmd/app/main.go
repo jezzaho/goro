@@ -51,8 +51,8 @@ func main() {
 	LXQuery := []internal.ApiQuery{
 		{
 			Airline:         "LX",
-			StartDate:       string(input.Beggining),
-			EndDate:         string(input.Ending),
+			StartDate:       input.Beggining,
+			EndDate:         input.Ending,
 			DaysOfOperation: "1234567",
 			TimeMode:        "LT",
 			Origin:          "KRK",
@@ -87,7 +87,7 @@ func main() {
 	apiAuth := internal.PostForAuth()
 	apiData := internal.GetApiData(queryList, apiAuth)
 	flattened := internal.FlattenJSON(apiData)
-	internal.CreateCSVFromResponse(flattened)
+	internal.CreateCSVFromResponse(flattened, input.SeparateDays)
 	spinner.Success("ROZKŁAD POBRANY!")
 	cli.RenderFinal()
 	//FRONTEND
