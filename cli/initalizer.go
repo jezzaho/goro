@@ -29,6 +29,7 @@ func RenderMainScreen() CliInput {
 	optionsAirlines = append(optionsAirlines, "OS - Austrian Airlines")
 	optionsAirlines = append(optionsAirlines, "LX - Swiss Airlines")
 	optionsAirlines = append(optionsAirlines, "SN - Brussels Airways")
+	optionsAirlines = append(optionsAirlines, "EN - Air Dolomiti")
 
 	// Use PTerm's interactive select feature to present the options to the user and capture their selection
 	// The Show() method displays the options and waits for the user's input

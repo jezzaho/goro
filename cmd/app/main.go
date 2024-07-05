@@ -70,6 +70,18 @@ func main() {
 			Destination:     "BRU",
 		},
 	}
+	ENQuery := []internal.ApiQuery{
+		{
+			Airline:         "EN",
+			StartDate:       input.Beggining,
+			EndDate:         input.Ending,
+			DaysOfOperation: "1234567",
+			TimeMode:        "LT",
+			Origin:          "KRK",
+			Destination:     "MUC",
+		},
+	}
+
 	var queryList []internal.ApiQuery
 
 	switch string(input.Line[:2]) {
@@ -81,6 +93,8 @@ func main() {
 		queryList = LXQuery
 	case "SN":
 		queryList = SNQuery
+	case "EN":
+		queryList = ENQuery
 	default:
 		queryList = []internal.ApiQuery{}
 	}
