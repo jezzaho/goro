@@ -85,12 +85,12 @@ func CreateCSVFromResponse(jsonData []byte, separate bool) {
 	var errResponse ErrorResponse
 	err := json.Unmarshal(jsonData, &errResponse)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		println(err.Error())
 	}
 	var flightResponses []FlightResponse
 	err = json.Unmarshal(jsonData, &flightResponses)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		println(err.Error())
 	}
 	// Open CSV file for writing
 	file, err := os.Create("output.csv")
@@ -121,8 +121,9 @@ func CreateCSVFromResponse(jsonData []byte, separate bool) {
 		startTimeWrite := NumberToTime(d.Legs[0].AircraftDepartureTimeLT)
 		endTimeWrite := NumberToTime(d.Legs[0].AircraftArrivalTimeLT)
 		daysOfOperationWrite := DaysOfOperation(d.PeriodOfOperationLT.DaysOfOperation)
+		operator := operatorToICAO(d.Legs[0].AircraftOwner)
 		// "Z", "Do", "Linia", "Numer", "Odlot", "Przylot", "Od", "Do", "Dni", "Samolot", "Operator", "Typ"
-		row := []string{d.Legs[0].Origin, d.Legs[0].Destination, d.Airline, flightNumberWrite, startTimeWrite, endTimeWrite, startDateWrite, endDateWrite, daysOfOperationWrite, d.Legs[0].AircraftType, d.Legs[0].AircraftOwner, d.Legs[0].ServiceType}
+		row := []string{d.Legs[0].Origin, d.Legs[0].Destination, d.Airline, flightNumberWrite, startTimeWrite, endTimeWrite, startDateWrite, endDateWrite, daysOfOperationWrite, d.Legs[0].AircraftType, operator, d.Legs[0].ServiceType}
 		var rows [][]string
 		if separate {
 			rows = SeparateDays(row)

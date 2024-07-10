@@ -35,10 +35,10 @@ func SSIMtoDate(s string) string {
 	switch length {
 	case 6:
 		// 4JUL24 012345
-		dateString += "0" + s[:1] + "-" + monthMap[s[1:4]] + "-20" + s[4:]
+		dateString += "20" + s[4:] + "-" + monthMap[s[1:4]] + "-0" + s[:1]
 	case 7:
 		// 19JUL24 0123456
-		dateString += s[:2] + "-" + monthMap[s[2:5]] + "-20" + s[5:]
+		dateString += "20" + s[5:] + "-" + monthMap[s[2:5]] + "-" + s[:2]
 	}
 	return dateString
 }
@@ -130,10 +130,10 @@ func performSeparation(row []string, d []int) [][]string {
 		cpy := make([]string, len(row))
 		copy(cpy, row)
 
-		from_day, _ := time.Parse("02-01-2006", from)
+		from_day, _ := time.Parse("2006-01-02", from)
 		f_day_n := int(from_day.Weekday())
 
-		to_day, _ := time.Parse("02-01-2006", to)
+		to_day, _ := time.Parse("2006-01-02", to)
 		t_day_n := int(to_day.Weekday())
 		var l int
 
@@ -152,12 +152,33 @@ func performSeparation(row []string, d []int) [][]string {
 		}
 
 		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
-		cpy[6] = string(from_day.AddDate(0, 0, l).Format("02-01-2006"))
-		cpy[7] = string(to_day.AddDate(0, 0, m).Format("02-01-2006"))
+		cpy[6] = string(from_day.AddDate(0, 0, l).Format("2006-01-02"))
+		cpy[7] = string(to_day.AddDate(0, 0, m).Format("2006-01-02"))
 
 		newRows = append(newRows, cpy)
 
 		// OD -> do przodu, DO do tylu, sprawdzenie dat
 	}
 	return newRows
+}
+
+func operatorToICAO(operator string) string {
+	operatorMap := map[string]string{
+		"2L": "OAW",
+		"BT": "BTI",
+		"LX": "SWR",
+		"CL": "CLH",
+		"EN": "DLA",
+		"LH": "DLH",
+		"OS": "AUA",
+		"SN": "BEL",
+	}
+
+	_, exists := operatorMap[operator]
+
+	if !exists {
+		return operator
+	} else {
+		return operatorMap[operator]
+	}
 }
