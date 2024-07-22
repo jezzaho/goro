@@ -7,8 +7,11 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Auth struct {
@@ -77,7 +80,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 	}
 	defer response.Body.Close()
 
-	// Read the response body
+	// Read the response Getenv
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("Error reading response:", err)
@@ -96,9 +99,9 @@ func PostForAuth() Auth {
 	client := http.Client{}
 
 	form := url.Values{}
-	form.Add("client_id", "uwbazeekjaagq3zdayamjp4y3")
-	form.Add("client_secret", "EH4mZgk9Xj")
-	form.Add("grant_type", "client_credentials")
+	form.Add("client_id", os.Getenv("CLIENT_ID"))
+	form.Add("client_secret", os.Getenv("CLIENT_SECRET"))
+	form.Add("grant_type", os.Getenv("GRANT_TYPE"))
 
 	req, err := http.NewRequest("POST", postString, strings.NewReader(form.Encode()))
 	if err != nil {

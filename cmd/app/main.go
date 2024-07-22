@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jezzaho/goro/cli"
 	"github.com/jezzaho/goro/cmd/internal"
+	"github.com/joho/godotenv"
 	"github.com/pterm/pterm"
 )
 
@@ -10,6 +11,7 @@ import (
 // 	"github.com/jezzaho/goro/cli"
 
 func main() {
+	godotenv.Load("somerandomfile")
 	// input := cli.CliInput{
 	// 	Line:      "LH",
 	// 	Beggining: "19JUL24",
