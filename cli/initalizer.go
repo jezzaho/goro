@@ -55,8 +55,8 @@ func RenderMainScreen() CliInput {
 		cliInput.Ending = "27NOV24"
 	}
 	if selectedTime == "W24" {
-		cliInput.Beggining = "28NOV24"
-		cliInput.Ending = "30MAR25"
+		cliInput.Beggining = "27OCT24"
+		cliInput.Ending = "29MAR25"
 	}
 	pterm.DefaultArea.Clear()
 	// Display the selected option to the user with a green color for emphasis

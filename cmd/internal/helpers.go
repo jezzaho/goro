@@ -5,10 +5,10 @@ import (
 	"encoding/csv"
 	"log"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 )
 
 func FlattenJSON(data []byte) []byte {
@@ -82,10 +82,16 @@ func csvReadRecords(fileName string) [][]string {
 }
 
 func moreThanOneNumberReg(s string) bool {
-	exp := `.*\d.*\d.*`
-	pattern := regexp.MustCompile(exp)
-	return pattern.Match([]byte(s))
-
+	digitCount := 0
+	for _, char := range s {
+		if unicode.IsDigit(char) {
+			digitCount++
+			if digitCount > 1 {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func SeparateDays(r []string) [][]string {
@@ -117,8 +123,12 @@ func SeparateDays(r []string) [][]string {
 		}
 
 		newLines = performSeparation(r, days)
+		return newLines
+	} else {
+		newLines = append(newLines, r)
+		return newLines
 	}
-	return newLines
+
 }
 
 func performSeparation(row []string, d []int) [][]string {
