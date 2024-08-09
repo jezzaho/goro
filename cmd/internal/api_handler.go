@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -40,11 +41,18 @@ func GetApiData(queryList []ApiQuery, apiAuth Auth) []byte {
 	for _, query := range queryList {
 		time.Sleep(2000 * time.Millisecond)
 		queryResult += getApiResponse(apiAuth, query)
+		if queryResult == "" {
+			log.Println("Empty query response before  query reverse")
+		}
 		// Swap query fields Origin and Destination for full result
 		query.Swap()
 		// Has to sleep - otherwise QPS is exceeded for Api Call
 		time.Sleep(2000 * time.Millisecond)
-		queryResult += getApiResponse(apiAuth, query)
+		queryResultP2 := getApiResponse(apiAuth, query)
+		if queryResultP2 == "" {
+			log.Println("Empty query response after query reverse")
+		}
+		queryResult += queryResultP2
 	}
 
 	return []byte(queryResult)
@@ -69,13 +77,16 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 
 	// Perform the GET request
 	request, err := http.NewRequest("GET", fullURL, nil)
+	if err != nil {
+		log.Println("Error during construction of GET request: ", err.Error())
+	}
 	request.Header.Add("Accept", "application/json")
 	authStr := "Bearer " + auth.AccessToken
 	request.Header.Add("Authorization", authStr)
 
 	response, err := client.Do(request)
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Println("Error occured during GET request from LH API: ", err.Error())
 		return ""
 	}
 	defer response.Body.Close()
@@ -83,7 +94,7 @@ func getApiResponse(auth Auth, query ApiQuery) string {
 	// Read the response Getenv
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("Error reading response:", err)
+		log.Println("Error occured during reading response body: ", err.Error())
 		return ""
 	}
 
@@ -105,7 +116,7 @@ func PostForAuth() Auth {
 
 	req, err := http.NewRequest("POST", postString, strings.NewReader(form.Encode()))
 	if err != nil {
-		fmt.Println("Error")
+		log.Println("Error occured during POST method: ", err.Error())
 		return Auth{}
 	}
 	req.PostForm = form
@@ -113,13 +124,13 @@ func PostForAuth() Auth {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error")
+		log.Println("Error occured during request: ", err.Error())
 		return Auth{}
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error")
+		log.Println("Error occured during reading response: ", err.Error())
 		return Auth{}
 	}
 
@@ -128,9 +139,9 @@ func PostForAuth() Auth {
 	var auth Auth
 	err = json.Unmarshal([]byte(body), &auth)
 	if err != nil {
-		fmt.Println("Error")
+		log.Println("Error occured during parsing the data: ", err.Error())
 		return Auth{}
 	}
-
+	log.Println("Successfully retrived authentication for a request")
 	return auth
 }

@@ -3,7 +3,7 @@ package internal
 import (
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
+	"log"
 	"os"
 	"strconv"
 )
@@ -81,21 +81,28 @@ func (f FlightResponse) isApiResponse() {}
 
 // Process Response
 
-func CreateCSVFromResponse(jsonData []byte, separate bool) {
+func CreateCSVFromResponse(fileName string, jsonData []byte, separate bool) {
 	var errResponse ErrorResponse
 	err := json.Unmarshal(jsonData, &errResponse)
 	if err != nil {
-		println(err.Error())
+		if err.Error() == "invalid character '{' after top-level value" {
+			log.Println("INV_CHAR: '{'\n", string(jsonData))
+		}
+		log.Println("ErrorResponse not valid here. ", err.Error())
 	}
 	var flightResponses []FlightResponse
 	err = json.Unmarshal(jsonData, &flightResponses)
 	if err != nil {
-		println(err.Error())
+		if err.Error() == "invalid character '{' after top-level value" {
+			log.Println("INV_CHAR: '{'\n", string(jsonData))
+		}
+		log.Println("Error while parsing FLIGHT_RESPONSE: ", err.Error())
 	}
 	// Open CSV file for writing
-	file, err := os.Create("output.csv")
+	fileName += ".csv"
+	file, err := os.Create(fileName)
 	if err != nil {
-		fmt.Println("Error creating CSV file:", err)
+		log.Println("Error while creating csv file: ", err.Error())
 		return
 	}
 	defer file.Close()
@@ -108,7 +115,7 @@ func CreateCSVFromResponse(jsonData []byte, separate bool) {
 	header := []string{"Z", "Do", "Linia", "Numer", "Odlot", "Przylot", "Od", "Do", "Dni", "Samolot", "Operator", "Typ"}
 	err = writer.Write(header)
 	if err != nil {
-		fmt.Println("Error writing CSV header:", err)
+		log.Println("Error while writing csv headers: ", err.Error())
 		return
 	}
 
@@ -130,7 +137,7 @@ func CreateCSVFromResponse(jsonData []byte, separate bool) {
 			for _, row := range rows {
 				err := writer.Write(row)
 				if err != nil {
-					fmt.Println("Error writing CSV row:", err)
+					log.Println("Error during writing a csv row: ", err.Error())
 					return
 				}
 			}
@@ -138,11 +145,11 @@ func CreateCSVFromResponse(jsonData []byte, separate bool) {
 
 			err := writer.Write(row)
 			if err != nil {
-				fmt.Println("Error writing CSV row:", err)
+				log.Println("Error during writing a csv row: ", err.Error())
 				return
 			}
 		}
 
 	}
-
+	log.Println("Successfully written a csv file")
 }

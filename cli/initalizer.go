@@ -9,10 +9,11 @@ import (
 )
 
 type CliInput struct {
-	Line         string
-	Beggining    string
-	Ending       string
-	SeparateDays bool
+	Line           string
+	Beggining      string
+	Ending         string
+	SeparateDays   bool
+	SelectedSeason string
 }
 
 func RenderMainScreen() CliInput {
@@ -58,6 +59,7 @@ func RenderMainScreen() CliInput {
 		cliInput.Beggining = "27OCT24"
 		cliInput.Ending = "29MAR25"
 	}
+	cliInput.SelectedSeason = selectedTime
 	pterm.DefaultArea.Clear()
 	// Display the selected option to the user with a green color for emphasis
 	pterm.Info.Printfln("Wybrano: %s", pterm.Green(selectedTime))
@@ -93,11 +95,11 @@ func RenderMainScreen() CliInput {
 	return cliInput
 }
 
-func RenderFinal() {
+func RenderFinal(fileName string) {
 	pterm.DefaultCenter.Println("Program 'ROZKŁADACZ' służy do sprawdzania rozkładów linii lotniczych. \n Eryk Kiper 2024")
 	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
 	pterm.DefaultCenter.Println(s)
-	pterm.DefaultCenter.Println("Program zapisał plik csv jako \"output.csv\" w folderu bieżącym.")
+	pterm.DefaultCenter.Printf("Program zapisał plik csv jako \"%s\" w folderu bieżącym.", fileName)
 	pterm.DefaultCenter.Println("Zadanie zakończone. Naciśnij Enter aby wyjść.")
 
 	// Wait for user to press Enter before exiting

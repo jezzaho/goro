@@ -2,9 +2,6 @@ package internal
 
 import (
 	"bytes"
-	"encoding/csv"
-	"log"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -61,24 +58,6 @@ func NumberToTime(n int64) string {
 }
 func DaysOfOperation(s string) string {
 	return strings.ReplaceAll(s, " ", ".")
-}
-func csvReadRecords(fileName string) [][]string {
-	// Z,Do,Linia,Numer,Odlot,Przylot,Od,Do,Dni,Samolot,Operator,Typ
-	// KRK,FRA,LH,1365,11:15,12:55,01-04-2024,01-04-2024,1......,320,LH,J
-	// KRK,FRA,LH,1365,11:15,12:55,02-04-2024,05-04-2024,.2..5..,320,LH,J
-	f, err := os.Open(fileName)
-	if err != nil {
-		log.Fatal("Unable to read file ", err)
-	}
-	defer f.Close()
-
-	csvReader := csv.NewReader(f)
-	records, err := csvReader.ReadAll()
-	if err != nil {
-		log.Fatal("Unable to read records ", err)
-	}
-
-	return records
 }
 
 func moreThanOneNumberReg(s string) bool {
