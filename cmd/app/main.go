@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"time"
@@ -22,6 +23,9 @@ func main() {
 
 	godotenv.Load()
 
+	serverFlag := flag.Bool("server", false, "localhost server as GUI")
+	flag.Parse()
+
 	// Create logging to output to file
 	logFile, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -32,6 +36,10 @@ func main() {
 	}
 
 	log.SetOutput(app.logFile)
+	log.Println("Server flag set to: ", *serverFlag)
+	if *serverFlag {
+		app.RunServer()
+	}
 
 	input := cli.RenderMainScreen()
 	spinner, _ := pterm.DefaultSpinner.Start("Pobieranie rozkładu.")

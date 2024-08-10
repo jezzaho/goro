@@ -2,3 +2,5 @@
 2024/08/09 23:22:33 Successfully retrived authentication for a request
 2024/08/09 23:22:43 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
 2024/08/09 23:22:43 Successfully written a csv file
+2024/08/10 00:06:43 Server flag set to:  false
+2024/08/10 00:06:51 Server flag set to:  true
