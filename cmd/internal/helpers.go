@@ -135,6 +135,9 @@ func performSeparation(row []string, d []int) [][]string {
 		// DO
 		var m int
 		if v > t_day_n {
+			// czy ja jestem debilem czy
+			// nie ma case dla m > 0 
+			// v = 7  t_day_n = 1 = (7-1)-7 = 6-7 = -1
 			m = (v - t_day_n) - 7
 		} else {
 			m = t_day_n - v
@@ -142,7 +145,11 @@ func performSeparation(row []string, d []int) [][]string {
 
 		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
 		cpy[6] = string(from_day.AddDate(0, 0, l).Format("2006-01-02"))
-		cpy[7] = string(to_day.AddDate(0, 0, m).Format("2006-01-02"))
+		if m >= 0 {
+			cpy[7] = string(to_day.AddDate(0, 0, -m).Format("2006-01-02"))
+		} else {
+			cpy[7] = string(to_day.AddDate(0, 0, m).Format("2006-01-02"))
+		}
 
 		newRows = append(newRows, cpy)
 

@@ -15,3 +15,23 @@
 2024/08/23 14:12:47 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
 2024/08/23 14:12:47 Successfully written a csv file
 2024/08/23 14:22:36 Server flag set to:  false
+2024/08/28 14:47:29 Server flag set to:  false
+2024/08/28 14:47:36 Set QueryList to Austrian Airlines
+2024/08/28 14:47:37 Successfully retrived authentication for a request
+2024/08/28 14:47:45 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
+2024/08/28 14:47:45 Successfully written a csv file
+2024/08/28 15:04:36 Server flag set to:  false
+2024/08/28 15:04:39 Set QueryList to Austrian Airlines
+2024/08/28 15:04:40 Successfully retrived authentication for a request
+2024/08/28 15:04:46 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
+2024/08/28 15:04:46 Successfully written a csv file
+2024/08/28 15:10:12 Server flag set to:  false
+2024/08/28 15:10:16 Set QueryList to Austrian Airlines
+2024/08/28 15:10:17 Successfully retrived authentication for a request
+2024/08/28 15:10:23 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
+2024/08/28 15:10:23 Successfully written a csv file
+2024/08/28 15:20:14 Server flag set to:  false
+2024/08/28 15:20:17 Set QueryList to Austrian Airlines
+2024/08/28 15:20:17 Successfully retrived authentication for a request
+2024/08/28 15:20:24 ErrorResponse not valid here.  json: cannot unmarshal array into Go value of type internal.ErrorResponse
+2024/08/28 15:20:24 Successfully written a csv file
