@@ -136,11 +136,11 @@ func performSeparation(row []string, d []int) [][]string {
 		var m int
 		if v > t_day_n {
 			// czy ja jestem debilem czy
-			// nie ma case dla m > 0 
+			// nie ma case dla m > 0
 			// v = 7  t_day_n = 1 = (7-1)-7 = 6-7 = -1
 			m = (v - t_day_n) - 7
 		} else {
-			m = t_day_n - v
+			m = v - t_day_n
 		}
 
 		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
