@@ -20,7 +20,7 @@ func RenderMainScreen() CliInput {
 	cliInput := CliInput{}
 
 	pterm.DefaultCenter.Println("Program 'ROZKŁADACZ' służy do sprawdzania rozkładów linii lotniczych. \n Eryk Kiper 2024")
-	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString("ROZKLADACZ")).Srender()
+	s, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromStringWithStyle("ROZKLADACZ", pterm.FgLightBlue.ToStyle())).Srender()
 	pterm.DefaultCenter.Println(s)
 
 	pterm.DefaultCenter.Println("Wybierz linię lotniczą dla której chcesz sprawdzić rozkład...")

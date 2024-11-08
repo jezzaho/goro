@@ -116,8 +116,11 @@ func performSeparation(row []string, d []int) [][]string {
 	for _, v = range d {
 		from := row[6]
 		to := row[7]
+		// cpy := make([]string, len(row)+2)
 		cpy := make([]string, len(row))
 		copy(cpy, row)
+
+		// datebeforeTo, _ := time.Parse("2006-01-02", row[7])
 
 		from_day, _ := time.Parse("2006-01-02", from)
 		f_day_n := int(from_day.Weekday())
@@ -135,14 +138,25 @@ func performSeparation(row []string, d []int) [][]string {
 		// DO
 		var m int
 		if v > t_day_n {
+			// czy ja jestem debilem czy
+			// nie ma case dla m > 0
+			// v = 7  t_day_n = 1 = (7-1)-7 = 6-7 = -1
 			m = (v - t_day_n) - 7
 		} else {
-			m = t_day_n - v
+			m = v - t_day_n
 		}
-
-		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
 		cpy[6] = string(from_day.AddDate(0, 0, l).Format("2006-01-02"))
 		cpy[7] = string(to_day.AddDate(0, 0, m).Format("2006-01-02"))
+		cpy[8] = strings.Repeat(".", v-1) + strconv.Itoa(v) + strings.Repeat(".", 7-v)
+
+		// cpy[9] = fmt.Sprintf("Laczne do: %v", row[7])
+
+		// if datebeforeTo.Before(to_day) || datebeforeTo.Equal(to_day) {
+		// 	cpy[10] = fmt.Sprint("Przedzial mniejszy: ", "TAK")
+		// } else {
+		// 	cpy[10] = fmt.Sprint("Przedzial mniejszy: ", "NIE")
+
+		// }
 
 		newRows = append(newRows, cpy)
 
